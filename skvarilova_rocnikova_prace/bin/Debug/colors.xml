@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfD_color xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <D_color>
+    <Hex>#CB997E</Hex>
+    <Threshold>0</Threshold>
+  </D_color>
+  <D_color>
+    <Hex>#DDBEA9</Hex>
+    <Threshold>0.25</Threshold>
+  </D_color>
+  <D_color>
+    <Hex>#FFE8D6</Hex>
+    <Threshold>0.5</Threshold>
+  </D_color>
+  <D_color>
+    <Hex>#B7B7A4</Hex>
+    <Threshold>0.75</Threshold>
+  </D_color>
+  <D_color>
+    <Hex>#6B705C</Hex>
+    <Threshold>1</Threshold>
+  </D_color>
+</ArrayOfD_color>

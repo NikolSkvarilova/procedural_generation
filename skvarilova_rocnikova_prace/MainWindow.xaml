@@ -1,0 +1,179 @@
+﻿<Window x:Class="skvarilova_rocnikova_prace.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf" xmlns:skvarilova_rocnikova_prace="clr-namespace:skvarilova_rocnikova_prace"
+        Title="Procedular Generator" Height="650" Width="1000" FontFamily="Montserrat" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="bvc" />
+    </Window.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Upper Row -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <TextBox Name="Width_TextBlock" Text="{ Binding render.Width, Mode=TwoWay }" BorderThickness="0 0 0 1" TextAlignment="Center" />
+            <TextBlock Text=" x " TextAlignment="Center" />
+            <TextBox Name="Height_TextBlock" Text="{ Binding render.Height, Mode=TwoWay }" BorderThickness="0 0 0 1" TextAlignment="Center" />
+        </StackPanel>
+
+        <!-- Error printing -->
+        <TextBlock Name="error_textBox" FontWeight="Bold" FontSize="10" Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" />
+
+        <!-- Image -->
+        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Stretch="Uniform" Grid.Column="0" Grid.Row="1" Name="NoiseImage" />
+
+        <!-- Settings (Column in the middle) -->
+        <StackPanel  Grid.Column="1" Grid.Row="1" Margin="15 0" >
+
+            <!-- Noise Scale settings -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Noise scale" FontWeight="Bold" Margin="5 0" />
+                <TextBox x:Name="noise_scale_textBox" BorderThickness="0 0 0 1" Margin="5 0 0 0" Text="{ Binding render.NoiseScale, Mode=TwoWay}" />
+            </StackPanel>
+
+            <!-- Bias Settings -->
+            <StackPanel Orientation="Vertical" Margin="0 5">
+                <Label Content="Seed settings" FontWeight="Bold" />
+                <StackPanel>
+                    <RadioButton Name="bias_checkBox" IsChecked="True">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>Use random seed</TextBlock>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton Name="static_bias_checkBox">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>Use custom seed:</TextBlock>
+                            <TextBox Name="custom_seed_textBox" MinWidth="10" Margin="5 0 0 0" BorderThickness="0 0 0 1" Text="{ Binding render.Bias, Mode=TwoWay }" />
+                            <TextBlock Text="Seed is not used." FontSize="8" VerticalAlignment="Center" Foreground="Gray" Width="90" TextWrapping="WrapWithOverflow" Visibility="{Binding IsChecked, ElementName=cellular_noise_radioButton, Converter={StaticResource bvc}}"/>
+                        </StackPanel>
+                    </RadioButton>
+                </StackPanel>
+            </StackPanel>
+
+            <Separator Background="#e0e0e0" />
+
+            <!-- Type of noise -->
+            <StackPanel Orientation="Vertical" Margin="0 5">
+                <Label Content="Type of noise" Margin="0 0 0 5" FontWeight="Bold" />
+                <RadioButton IsChecked="True" Name="value_noise_radioButton">Value Noise</RadioButton>
+                <RadioButton Name="gradient_noise_radioButton">Gradient Noise</RadioButton>
+                <RadioButton Name="cellular_noise_radioButton">Cellular Noise</RadioButton>
+            </StackPanel>
+
+            <!-- Number of cells -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Visibility="{Binding IsChecked, ElementName=cellular_noise_radioButton, Converter={StaticResource bvc}}">
+                <TextBlock Text="Number of cells" FontWeight="Bold" Margin="5 0" />
+                <TextBox MinWidth="5" HorizontalAlignment="Left" Text="{Binding render.NumOfCells}" BorderThickness="0 0 0 1" Margin="5 0 0 0" Name="num_of_cells_textBox" />
+            </StackPanel>
+
+            <Separator Background="#e0e0e0" />
+
+            <!-- Color mode settings -->
+            <StackPanel Orientation="Vertical">
+                <Label FontWeight="Bold">Color mode</Label>
+                <RadioButton x:Name="colored_radio_button">Colored</RadioButton>
+                <RadioButton Name="gray_radio_button" IsChecked="true">Shades of gray</RadioButton>
+            </StackPanel>
+
+            <!-- Gradient Settings -->
+            <StackPanel Orientation="Vertical" Margin="0 10 0 10" Visibility="{Binding IsChecked, ElementName=colored_radio_button, Converter={StaticResource bvc}}">
+                <CheckBox IsChecked="False" Name="gradient_checkBox" Content="Gradients between colors" />
+                <TextBlock TextWrapping="Wrap" Margin="0 5 0 0" Text="Please keep in mind, that in order to have gradients working properly, you must set colors for 0.0 and 1.0 too. Otherwise you will experience black spaces in the image." Foreground="Gray" FontSize="10" />
+            </StackPanel>
+
+            <!-- Black or white settings -->
+            <StackPanel Orientation="Vertical" Margin="0 10 0 10" Visibility="{Binding IsChecked, ElementName=cellular_noise_radioButton, Converter={StaticResource bvc}}">
+                <Label Content="Dark and light mode" FontWeight="Bold" />
+                <RadioButton Content="Dark" IsChecked="True" Name="dark_mode_radioButton" />
+                <RadioButton Content="Light" Name="light_mode_radioButton" />
+            </StackPanel>
+
+        </StackPanel>
+
+        <!-- Save image button -->
+        <Button Content="save image" Grid.Column="0" Grid.Row="2" Background="white" Name="save_button" Click="save_button_click" Margin="4 10" Padding="4" BorderThickness="0.75"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+        <!-- Colors (Column on the right) -->
+        <StackPanel Margin="5" Orientation="Vertical" Grid.Row="1" Grid.Column="2">
+
+            <!-- Heading -->
+            <TextBlock FontWeight="Bold" Text="Colors" />
+
+            <!-- Color Listbox -->
+            <ListBox Name="Color_ListBox" ItemsSource="{ Binding colorHandler.itemList }" MinHeight="30" Margin="0 10">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Definition of the row format in the list box -->
+                                <Ellipse Height="15" Width="15" Margin="0 0 5 0" Stroke="Black" StrokeThickness="0.5" Fill="{ Binding Path=Hex }" Grid.Column="0"></Ellipse>
+                                <TextBox Grid.Row="0" BorderThickness="0" Grid.Column="1" Text="{ Binding Path=Hex }"></TextBox>
+                                <TextBox Grid.Row="0" BorderThickness="0" Grid.Column="2" Text="{ Binding Path=Threshold }"></TextBox>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Input fields for adding colors -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+
+                <!-- HEX color field -->
+                <StackPanel Orientation="Vertical" Margin="0 0 5 0">
+                    <TextBlock Text="HEX color" />
+                    <TextBox Name="color_input" Margin="0 5" BorderThickness="1" Text="" Width="60" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                </StackPanel>
+
+                <!-- Threshold field -->
+                <StackPanel Orientation="Vertical" Margin="5 0 0 0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Threshold" Margin="0 0 5 0" />
+                        <TextBlock Text="(between 0 and 1)" FontSize="9" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBox Name="threshold_input" Margin="0 5" BorderThickness="1" Text="" MinWidth="30" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Buttons for adding and removing -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="add" Margin="4 10" Padding="4" Background="White" Click="add_color" BorderThickness="0.75"  VerticalAlignment="Center" />
+                <Button Content="remove" Margin="4 10" Padding="4" Background="White" Click="remove_color" BorderThickness="0.75" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </StackPanel>
+            
+            <!-- Remove all colors -->
+            <Button Content="clear all" Name="clear_all_colors_button" HorizontalAlignment="Center" Click="clear_all_colors" BorderThickness="0.75" Padding="4" Background="#f8ad9d" />
+        </StackPanel>
+
+        <!-- Generate Button -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2">
+            <Button Content="generate" Background="#90e0ef" Name="barvicky_button" Click="barvicky_button_click" Margin="4 10" Padding="4" BorderThickness="0.75"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </StackPanel>
+        <!-- Buttons for saving and loading colors from XML -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2">
+            <Button Content="save colors"  Margin="4 10" Padding="4" Background="White" Click="save_colors" BorderThickness="0.75"  VerticalAlignment="Center" HorizontalAlignment="center" />
+            <Button Content="load colors"  Margin="4 10" Padding="4" Background="White" Click="load_colors" BorderThickness="0.75"  VerticalAlignment="Center" HorizontalAlignment="center" />
+        </StackPanel>
+    </Grid>
+</Window>
